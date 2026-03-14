@@ -39,15 +39,48 @@
         }
 
         .screen {
-            width: 100%;
-            height: 100%;
-            border-radius: 26px;
-            background: radial-gradient(circle at top, #ffdde1 0, #f8c3d8 35%, #fcbad3 55%, #f8aed0 100%);
-            overflow: hidden;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-        }
+    width: 100%;
+    height: 100%;
+    border-radius: 26px;
+    background: radial-gradient(circle at top, #ffdde1 0, #f8c3d8 35%, #fcbad3 55%, #f8aed0 100%);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* лёгкая анимация фона */
+.screen::before {
+    content: "";
+    position: absolute;
+    inset: -20%;
+    background:
+        radial-gradient(circle at 0% 0%, rgba(255,255,255,0.45), transparent 60%),
+        radial-gradient(circle at 100% 0%, rgba(255,192,203,0.45), transparent 60%),
+        radial-gradient(circle at 0% 100%, rgba(255,182,193,0.35), transparent 60%),
+        radial-gradient(circle at 100% 100%, rgba(255,105,180,0.4), transparent 60%);
+    opacity: 0.7;
+    animation: floatBg 16s ease-in-out infinite alternate;
+    pointer-events: none;
+    z-index: 0;
+}
+
+@keyframes floatBg {
+    0% {
+        transform: translate3d(0,0,0) scale(1);
+        filter: blur(0px);
+    }
+    50% {
+        transform: translate3d(-10px,10px,0) scale(1.05);
+        filter: blur(1px);
+    }
+    100% {
+        transform: translate3d(10px,-10px,0) scale(1.03);
+        filter: blur(1.5px);
+    }
+}
+
+
 
         .hidden { display: none !important; }
 
@@ -60,6 +93,7 @@
             color: #fff;
             font-size: 14px;
             position: relative;
+            z-index: 1;
         }
 
         .status-left {
@@ -146,7 +180,9 @@
             padding: 16px 18px 14px;
             display: flex;
             flex-direction: column;
-        }
+            position: relative;
+            z-index: 1;
+            }
 
         .folders-grid {
             flex: 1;

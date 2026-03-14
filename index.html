@@ -29,6 +29,13 @@
             align-items: center;
             justify-content: center;
             position: relative;
+            transition: background .2s, box-shadow .2s, padding .2s, border-radius .2s;
+        }
+        .app-wrapper.flat {
+            background: transparent;
+            box-shadow: none;
+            padding: 0;
+            border-radius: 0;
         }
 
         .screen {
@@ -55,6 +62,11 @@
             position: relative;
         }
 
+        .status-left {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
         .status-center {
             position: absolute;
             left: 50%;
@@ -68,12 +80,6 @@
         .status-hearts {
             font-size: 13px;
             letter-spacing: 1px;
-            animation: heartsPulse 2s infinite;
-        }
-
-        @keyframes heartsPulse {
-            0%,100% { opacity: 0.6; transform: scale(0.98); }
-            50% { opacity: 1; transform: scale(1); }
         }
 
         .status-date {
@@ -146,10 +152,10 @@
             flex: 1;
             display: flex;
             flex-wrap: wrap;
-            align-content: flex-start;
-            gap: 14px;
+            align-content: center;
+            gap: 16px;
             justify-content: center;
-            padding-top: 24px;
+            padding-top: 12px;
         }
 
         .folder {
@@ -194,7 +200,7 @@
 
         .folder-screen-title {
             text-align:center;
-            font-size:14px;
+            font-size:15px;
             font-weight:600;
             color:#7a2943;
             margin-top:6px;
@@ -501,14 +507,14 @@
     </style>
 </head>
 <body>
-<div class="app-wrapper">
+<div class="app-wrapper flat">
     <div class="screen" id="screenRoot">
 
         <div id="toast" class="toast">нууу!!! попробуй еще раз Ó╭╮Ò</div>
 
         <!-- Экран 0: папки -->
         <div class="content" id="stepFolders">
-            <div class="folder-screen-title">папки</div>
+            <div class="folder-screen-title">10 месяцев, покажи, на что ты способен!😂❤️</div>
             <div class="folders-grid" id="foldersGrid"></div>
         </div>
 
@@ -527,8 +533,9 @@
         <!-- Экран 2: телефон – время/дата -->
         <div class="content hidden" id="stepPhoneTime">
             <div class="status-bar">
+                <div class="status-left" id="statusTime"></div>
                 <div class="status-center">
-                    <div class="status-hearts">♡ • ♡ • ♡ • ♡ • ♡</div>
+                    <div class="status-hearts" id="statusHearts">♡ • ♡ • ♡ • ♡ • ♡</div>
                     <div class="status-date">15 марта 2026</div>
                 </div>
                 <div class="status-right">
@@ -541,7 +548,6 @@
             <div class="center-message">
                 <div class="big-time">20:00</div>
                 <div class="big-date">15 марта 2026</div>
-                <div class="hint-text">это время, когда мы начали встречаться 💗</div>
             </div>
             <div class="nav-bar">
                 <button class="nav-button" id="btnBackToPin">⟵</button>
@@ -552,8 +558,9 @@
         <!-- Экран 3: меню приложений -->
         <div class="content hidden" id="stepApps">
             <div class="status-bar">
+                <div class="status-left" id="statusTimeApps"></div>
                 <div class="status-center">
-                    <div class="status-hearts">♡ • ♡ • ♡ • ♡ • ♡</div>
+                    <div class="status-hearts" id="statusHeartsApps">♡ • ♡ • ♡ • ♡ • ♡</div>
                     <div class="status-date">15 марта 2026</div>
                 </div>
                 <div class="status-right">
@@ -584,8 +591,9 @@
         <!-- Экран 4: игра сердечко -->
         <div class="content hidden" id="stepGame">
             <div class="status-bar">
+                <div class="status-left" id="statusTimeGame"></div>
                 <div class="status-center">
-                    <div class="status-hearts">♡ • ♡ • ♡ • ♡ • ♡</div>
+                    <div class="status-hearts" id="statusHeartsGame">♡ • ♡ • ♡ • ♡ • ♡</div>
                     <div class="status-date">игра с сердечками</div>
                 </div>
                 <div class="status-right">
@@ -609,8 +617,9 @@
         <!-- Экран 5: список галереи -->
         <div class="content hidden" id="stepGalleryList">
             <div class="status-bar">
+                <div class="status-left" id="statusTimeGallery"></div>
                 <div class="status-center">
-                    <div class="status-hearts">♡ • ♡ • ♡ • ♡ • ♡</div>
+                    <div class="status-hearts" id="statusHeartsGallery">♡ • ♡ • ♡ • ♡ • ♡</div>
                     <div class="status-date">наши моменты</div>
                 </div>
                 <div class="status-right">
@@ -630,9 +639,10 @@
         <!-- Экран 6: полноэкранное фото/видео -->
         <div class="content hidden" id="stepMedia">
             <div class="status-bar">
+                <div class="status-left" id="statusTimeMedia"></div>
                 <div class="status-center">
-                    <div class="status-hearts">♡ • ♡ • ♡ • ♡ • ♡</div>
-                    <div class="status-date" id="mediaStatusTitle">момент</div>
+                    <div class="status-hearts" id="statusHeartsMedia">♡ • ♡ • ♡ • ♡ • ♡</div>
+                    <div class="status-date" id="mediaStatusTitle">наш момент</div>
                 </div>
                 <div class="status-right">
                     <div class="wifi-icon"></div>
@@ -655,6 +665,7 @@
 
 <script>
 (function(){
+    const appWrapper = document.querySelector('.app-wrapper');
     const toast = document.getElementById('toast');
 
     function showToast(){
@@ -695,7 +706,10 @@
             addFolder('документы', ()=>{folderStage=4;renderFolders();});
         } else if(folderStage === 4){
             addFolder('документы', ()=>{});
-            addFile('пароль', ()=>{showScreen('pin');});
+            addFile('пароль', ()=>{
+                showScreen('pin');
+                appWrapper.classList.remove('flat');
+            });
         }
     }
 
@@ -811,6 +825,48 @@
     renderPinDots();
     renderNumPad();
 
+    /* ---------- ВРЕМЯ + АНИМАЦИЯ СЕРДЕЦ ---------- */
+
+    function formatTime(date){
+        let h = date.getHours();
+        let m = date.getMinutes();
+        return (h<10?'0'+h:h)+':'+(m<10?'0'+m:m);
+    }
+
+    const timeEls = [
+        document.getElementById('statusTime'),
+        document.getElementById('statusTimeApps'),
+        document.getElementById('statusTimeGame'),
+        document.getElementById('statusTimeGallery'),
+        document.getElementById('statusTimeMedia')
+    ].filter(Boolean);
+
+    const heartEls = [
+        document.getElementById('statusHearts'),
+        document.getElementById('statusHeartsApps'),
+        document.getElementById('statusHeartsGame'),
+        document.getElementById('statusHeartsGallery'),
+        document.getElementById('statusHeartsMedia')
+    ].filter(Boolean);
+
+    const heartPatterns = [
+        '♡ • ♡ • ♡ • ♡ • ♡',
+        '• ♡ • ♡ • ♡ • ♡ •'
+    ];
+    let heartIndex = 0;
+
+    function updateTimeAndHearts(){
+        const now = new Date();
+        const t = formatTime(now);
+        timeEls.forEach(el=>{ if(el) el.textContent = t; });
+
+        heartIndex = (heartIndex + 1) % heartPatterns.length;
+        heartEls.forEach(el=>{ if(el) el.textContent = heartPatterns[heartIndex]; });
+    }
+
+    updateTimeAndHearts();
+    setInterval(updateTimeAndHearts, 1000);
+
     /* ---------- НАВИГАЦИЯ ТЕЛЕФОНА ---------- */
 
     document.getElementById('btnBackToPin').onclick = ()=>{ showScreen('pin'); };
@@ -829,7 +885,6 @@
     const gameScore = document.getElementById('gameScore');
 
     function resetGame(){
-        gameScore.textContent = 'сердечки: 0';
         gameArea.innerHTML = '';
         const scoreDiv = document.createElement('div');
         scoreDiv.id = 'gameScore';
